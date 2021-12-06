@@ -2,16 +2,17 @@ function ContentProviderPlugin() {
 }
 
 var pluginMethods = [
-	"query"
+  "query"
 ];
 
 pluginMethods.forEach(function (pluginMethod) {
-	ContentProviderPlugin.prototype[pluginMethod] = function (jsonArg, successCallback, errorCallback) {
-		cordova.exec(successCallback, errorCallback, "ContentProviderPlugin", pluginMethod, [jsonArg]);
-	};
+  ContentProviderPlugin.prototype[pluginMethod] = function (jsonArg, successCallback, errorCallback) {
+    cordova.exec(successCallback, errorCallback, "ContentProviderPlugin", pluginMethod, [jsonArg]);
+  };
 });
 
 ContentProviderPlugin.install = function () {
+  console.log('test custom plugin -------');
   if (!window.plugins) {
     window.plugins = {};
   }
