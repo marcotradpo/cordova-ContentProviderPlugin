@@ -6,11 +6,11 @@
     "id": "com.phearme.cordovaplugin.ContentProviderPlugin",
     "platforms": [
       "android"
-     ]
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phearme/cordova-ContentProviderPlugin.git"
+    "url": "git+https://github.com/marcotradpo/cordova-ContentProviderPlugin.git"
   },
   "keywords": [
     "cordova",
@@ -23,7 +23,7 @@
   "author": "phearme",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/phearme/cordova-ContentProviderPlugin/issues"
+    "url": "https://github.com/marcotradpo/cordova-ContentProviderPlugin/issues"
   },
-  "homepage": "https://github.com/phearme/cordova-ContentProviderPlugin#readme"
+  "homepage": "https://github.com/marcotradpo/cordova-ContentProviderPlugin#readme"
 }
