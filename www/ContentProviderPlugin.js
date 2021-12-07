@@ -2,6 +2,7 @@ function ContentProviderPlugin() {
 }
 
 var pluginMethods = [
+  "create",
   "query"
 ];
 
