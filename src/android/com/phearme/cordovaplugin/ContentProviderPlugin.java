@@ -12,9 +12,11 @@ import android.content.ContentProvider;
 import android.content.UriMatcher;
 import android.text.TextUtils;
 
-public class ContentProviderPlugin extends CordovaPlugin, ContentProvider {
+public class ContentProviderPlugin extends CordovaPlugin {
 	private String WRONG_PARAMS = "Wrong parameters.";
 	private String UNKNOWN_ERROR = "Unknown error.";
+
+	private class ContentProviderBuilder extends ContentProvider {
 	private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 
@@ -48,6 +50,11 @@ public class ContentProviderPlugin extends CordovaPlugin, ContentProvider {
         }
        
     }
+
+    }
+
+    private ContentProviderBuilder testFoo = new ContentProviderBuilder();
+
 
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
