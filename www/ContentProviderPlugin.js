@@ -12,7 +12,7 @@ pluginMethods.forEach(function (pluginMethod) {
 });
 
 ContentProviderPlugin.install = function () {
-  console.log('test custom plugin -------');
+  console.log('test custom plugin 2-------');
   if (!window.plugins) {
     window.plugins = {};
   }
