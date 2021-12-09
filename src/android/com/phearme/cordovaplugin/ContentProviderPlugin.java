@@ -164,8 +164,8 @@ public class ContentProviderPlugin extends CordovaPlugin {
 
 
         Uri delUri = ContentUris.withAppendedId(Users.CONTENT_URI, Long.parseLong(id));
-        long resultCount = getContentResolver().delete(delUri, null, null);
-		
+        long resultCount = cordova.getActivity().getContentResolver().delete(delUri, null, null);
+
 		if (resultCount == 0) {
       		callback.error(UNKNOWN_ERROR);
       		return;
