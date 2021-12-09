@@ -22,5 +22,20 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
         </config-file>
         -->
+		<config-file target="AndroidManifest.xml" parent="/*">
+		    <permission android:name="de.openminds.samples.cpsample.lentitems.READ" android:protectionLevel="normal" />
+			<permission android:name="de.openminds.samples.cpsample.lentitems.WRITE" android:protectionLevel="normal" />
+	   </config-file>
+	   <config-file target="AndroidManifest.xml" parent="application">
+			<provider
+				android:name="com.phearme.cordovaplugin.LentItemsProvider"
+				android:authorities="de.openminds.samples.cpsample.lentitems"
+				android:exported="true"
+				android:grantUriPermissions="true"
+				android:label="LentItemsProvider"
+				android:readPermission="de.openminds.samples.cpsample.lentitems.READ"
+				android:writePermission="de.openminds.samples.cpsample.lentitems.WRITE" >
+			</provider>
+		</config-file>
 	</platform>
 </plugin>
