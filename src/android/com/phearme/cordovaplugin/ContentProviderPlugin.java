@@ -31,7 +31,7 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			return false;
 		}
 
-		if (action.equals("queryUser") || action.equals("insertUser") || action.equals("updateUser")) {
+		if (action.equals("queryUser") || action.equals("insertUser")  || action.equals("deleteUser")  || action.equals("updateUser")) {
 			cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				if (action.equals("queryUser")) {
