@@ -13,74 +13,120 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 
-import com.phearme.cordovaplugin.LentItemsContract.Items;
+import com.phearme.cordovaplugin.UsersContract.Users;
 
 public class ContentProviderPlugin extends CordovaPlugin {
 	private String WRONG_PARAMS = "Wrong parameters.";
 	private String UNKNOWN_ERROR = "Unknown error.";
 
-    private LentItemsProvider testFoo = new LentItemsProvider();
-
-
+    private UsersProvider usersProvider = new UsersProvider();
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		final JSONArray methodArgs = args;
 		final CallbackContext callback = callbackContext;
+		final JSONObject queryArgs = methodArgs.getJSONObject(0);
 
-		if (action.equals("query")) {
-			final JSONObject queryArgs = methodArgs.getJSONObject(0);
-			if (queryArgs == null) {
-				callback.error(WRONG_PARAMS);
-				return false;
-			}
+		if (queryArgs == null) {
+			callback.error(WRONG_PARAMS);
+			return false;
+		}
+
+		if (action.equals("queryUser") || action.equals("insertUser") || action.equals("updateUser")) {	
 			cordova.getThreadPool().execute(new Runnable() {
-				public void run() {
+			public void run() {
+				if (action.equals("queryUser")) {
 					runQuery(queryArgs, callback);
-				}
+					}
+				
+				if (action.equals("insertUser")) {
+					runInsert(queryArgs, callback);
+					}
+			
+				if (action.equals("updateUser")) {
+					runUpdate(queryArgs, callback);
+					}
+				};
 			});
 			return true;
 		}
-		if (action.equals("create")) {
-			final JSONObject queryArgs = methodArgs.getJSONObject(0);
-			if (queryArgs == null) {
-				callback.error(WRONG_PARAMS);
-				return false;
-			}
-			cordova.getThreadPool().execute(new Runnable() {
-				public void run() {
-					runCreate(queryArgs, callback);
-				}
-			});
-			return true;
-		}
+				
 		return false;
 	}
 
-	private void runCreate(JSONObject queryArgs, CallbackContext callback) {
-		callback.success("hello");
-    ContentValues values = new ContentValues();
-    values.put(Items.NAME, "marcom");
-    values.put(Items.BORROWER, "provam");
+	private void runInsert(JSONObject queryArgs, CallbackContext callback) {
 
+		String username = null;
+		String password = null;
+		JSONArray resultJSONArray;
 
-    Uri updateUri = ContentUris.withAppendedId(Items.CONTENT_URI, 5);
-    // run query
+		try {
+			if (!queryArgs.isNull("username") || !queryArgs.isNull("password")) {
+				username = queryArgs.getString("username");
+				password = queryArgs.getString("password");
+			} else {
+				callback.error(WRONG_PARAMS);
+				return;
+			}
+		} catch (JSONException e) {
+			callback.error(WRONG_PARAMS);
+			return;
+		}
+		
+		ContentValues values = new ContentValues();
+		values.put(Users.USERNAME, username);
+		values.put(Users.PASSWORD, password);
 
-    Uri photoResult = cordova.getActivity().getContentResolver().insert(Items.CONTENT_URI, values);
-    if (photoResult == null) {
-      callback.error(UNKNOWN_ERROR);
-      return;
-    }
-    callback.success(2);
+		Uri userResult = cordova.getActivity().getContentResolver().insert(Users.CONTENT_URI, values);
+		if (userResult == null) {
+			callback.error(UNKNOWN_ERROR);
+			return;
+		}
 
-    long resultCount = cordova.getActivity().getContentResolver().update(updateUri, values, null, null);
-    if (resultCount == 0) {
-      callback.error(UNKNOWN_ERROR);
-      return;
-    }
-    callback.success((int) resultCount);
+		JSONObject resultUri = new JSONObject();
+					
+		resultUri.put("userResultUri", userResult.getString(i));
+					
+		callback.success(resultUri);
 	}
 
+
+	private void runUpdate(JSONObject queryArgs, CallbackContext callback) {
+
+		String username = null;
+		String password = null;
+		String id = null;
+		JSONArray resultJSONArray;
+
+		try {
+			if (!queryArgs.isNull("username") || !queryArgs.isNull("password") || !queryArgs.isNull("id")) {
+				id = queryArgs.getString("id");
+				username = queryArgs.getString("username");
+				password = queryArgs.getString("password");
+			} else {
+				callback.error(WRONG_PARAMS);
+				return;
+			}
+		} catch (JSONException e) {
+			callback.error(WRONG_PARAMS);
+			return;
+		}
+		
+		ContentValues values = new ContentValues();
+		values.put(Users.USERNAME, username);
+		values.put(Users.PASSWORD, password);
+
+		Uri updateUri = ContentUris.withAppendedId(Users.CONTENT_URI, id);
+		long resultCount = cordova.getActivity().getContentResolver().update(updateUri, values, null, null);
+
+		if (resultCount == 0) {
+      		callback.error(UNKNOWN_ERROR);
+      		return;
+    	}
+
+		JSONObject result = new JSONObject();	
+		result.put("resultCount", resultCount);
+		callback.success(result);
+	}
 
 
 	private void runQuery(JSONObject queryArgs, CallbackContext callback) {

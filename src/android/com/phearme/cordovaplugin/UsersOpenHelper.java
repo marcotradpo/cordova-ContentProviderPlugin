@@ -6,25 +6,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * The SQLiteOpenhelper implementation for lent items.
+ * The SQLiteOpenhelper implementation for lent users.
  *
  * @author Wolfram Rittmeyer
  *
  */
-/* package */ class LentItemsOpenHelper extends SQLiteOpenHelper {
+/* package */ class UsersOpenHelper extends SQLiteOpenHelper {
 
-	private static final String NAME = DbSchema.DB_NAME;
+	private static final String USERNAME = DbSchema.DB_USERNAME;
 	private static final int VERSION = 1;
 
-	public LentItemsOpenHelper(Context context) {
-		super(context, NAME, null, VERSION);
+	public UsersOpenHelper(Context context) {
+		super(context, USERNAME, null, VERSION);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(DbSchema.DDL_CREATE_TBL_ITEMS);
-		db.execSQL(DbSchema.DDL_CREATE_TBL_PHOTOS);
-		db.execSQL(DbSchema.DDL_CREATE_TRIGGER_DEL_ITEMS);
+		db.execSQL(DbSchema.DDL_CREATE_TBL_USERS);
 	}
 
 	@Override
@@ -34,9 +32,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 		//
 		// NEVER do this in real apps. Your users wouldn't like
 		// loosing data just because you decided to change the schema
-		db.execSQL(DbSchema.DDL_DROP_TBL_ITEMS);
-		db.execSQL(DbSchema.DDL_DROP_TBL_PHOTOS);
-		db.execSQL(DbSchema.DDL_DROP_TRIGGER_DEL_ITEMS);
+		db.execSQL(DbSchema.DDL_DROP_TBL_USERS);
 		onCreate(db);
 	}
 

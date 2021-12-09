@@ -2,8 +2,9 @@ function ContentProviderPlugin() {
 }
 
 var pluginMethods = [
-  "create",
-  "query"
+  "insertUser",
+  "updateUser",
+  "queryUser"
 ];
 
 pluginMethods.forEach(function (pluginMethod) {
@@ -13,7 +14,7 @@ pluginMethods.forEach(function (pluginMethod) {
 });
 
 ContentProviderPlugin.install = function () {
-  console.log('test custom plugin 2-------');
+  console.log('Content Provider user plugin');
   if (!window.plugins) {
     window.plugins = {};
   }

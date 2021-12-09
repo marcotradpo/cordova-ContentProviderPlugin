@@ -40,44 +40,34 @@ import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.phearme.cordovaplugin.LentItemsContract.ItemEntities;
-import com.phearme.cordovaplugin.LentItemsContract.Items;
-import com.phearme.cordovaplugin.LentItemsContract.Photos;
+import com.phearme.cordovaplugin.UsersContract.Users;
 
 /**
- * The actual provider class for the lentitems provider. Clients do not use it directly. Nor
+ * The actual provider class for the users provider. Clients do not use it directly. Nor
  * do they see it.
  *
  * @author Wolfram Rittmeyer
  */
-public class LentItemsProvider extends ContentProvider {
+public class UsersProvider extends ContentProvider {
 
 	// helper constants for use with the UriMatcher
 	private static final int ITEM_LIST = 1;
 	private static final int ITEM_ID = 2;
-	private static final int PHOTO_LIST = 5;
-	private static final int PHOTO_ID = 6;
-	private static final int ENTITY_LIST = 10;
-	private static final int ENTITY_ID = 11;
    private static final UriMatcher URI_MATCHER;
 
-	private LentItemsOpenHelper mHelper = null;
+	private UsersOpenHelper mHelper = null;
    private final ThreadLocal<Boolean> mIsInBatchMode = new ThreadLocal<Boolean>();
 
 	// prepare the UriMatcher
 	static {
 		URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-		URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "items", ITEM_LIST);
-		URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "items/#", ITEM_ID);
-		URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "photos", PHOTO_LIST);
-		URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "photos/#", PHOTO_ID);
-      URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "entities", ENTITY_LIST);
-      URI_MATCHER.addURI(LentItemsContract.AUTHORITY, "entities/#", ENTITY_ID);
+		URI_MATCHER.addURI(UsersContract.AUTHORITY, "users", ITEM_LIST);
+		URI_MATCHER.addURI(UsersContract.AUTHORITY, "users/#", ITEM_ID);
 	}
 
 	@Override
 	public boolean onCreate() {
-		mHelper = new LentItemsOpenHelper(getContext());
+		mHelper = new UsersOpenHelper(getContext());
 		return true;
 	}
 
@@ -89,15 +79,15 @@ public class LentItemsProvider extends ContentProvider {
 		int delCount = 0;
 		switch (URI_MATCHER.match(uri)) {
 		case ITEM_LIST:
-			delCount = db.delete(DbSchema.TBL_ITEMS, selection, selectionArgs);
+			delCount = db.delete(DbSchema.TBL_USERS, selection, selectionArgs);
 			break;
 		case ITEM_ID:
 			String idStr = uri.getLastPathSegment();
-			String where = Items._ID + " = " + idStr;
+			String where = Users._ID + " = " + idStr;
 			if (!TextUtils.isEmpty(selection)) {
 				where += " AND " + selection;
 			}
-			delCount = db.delete(DbSchema.TBL_ITEMS, where, selectionArgs);
+			delCount = db.delete(DbSchema.TBL_USERS, where, selectionArgs);
 			break;
 		default:
 			// no support for deleting photos or entities -
@@ -115,17 +105,9 @@ public class LentItemsProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		switch (URI_MATCHER.match(uri)) {
 		case ITEM_LIST:
-			return Items.CONTENT_TYPE;
+			return Users.CONTENT_TYPE;
 		case ITEM_ID:
-			return Items.CONTENT_ITEM_TYPE;
-		case PHOTO_ID:
-			return Photos.CONTENT_PHOTO_TYPE;
-		case PHOTO_LIST:
-			return Photos.CONTENT_TYPE;
-      case ENTITY_ID:
-         return ItemEntities.CONTENT_ENTITY_TYPE;
-      case ENTITY_LIST:
-         return ItemEntities.CONTENT_TYPE;
+			return Users.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
@@ -134,23 +116,14 @@ public class LentItemsProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
       doAnalytics(uri, "insert");
-		if (URI_MATCHER.match(uri) != ITEM_LIST
-				&& URI_MATCHER.match(uri) != PHOTO_LIST) {
+		if (URI_MATCHER.match(uri) != ITEM_LIST) {
 			throw new IllegalArgumentException(
 					"Unsupported URI for insertion: " + uri);
 		}
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		if (URI_MATCHER.match(uri) == ITEM_LIST) {
-			long id = db.insert(DbSchema.TBL_ITEMS, null, values);
+			long id = db.insert(DbSchema.TBL_USERS, null, values);
 			return getUriForId(id, uri);
-		} else {
-			// this insertWithOnConflict is a special case; CONFLICT_REPLACE
-			// means that an existing entry which violates the UNIQUE constraint
-			// on the item_id column gets deleted. That is this INSERT behaves
-			// nearly like an UPDATE. Though the new row has a new primary key.
-		   // See how I mentioned this in the Contract class.
-			long id = db.insertWithOnConflict(DbSchema.TBL_PHOTOS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-         return getUriForId(id, uri);
 		}
 	}
 
@@ -179,38 +152,20 @@ public class LentItemsProvider extends ContentProvider {
 	   boolean useAuthorityUri = false;
 		switch (URI_MATCHER.match(uri)) {
 		case ITEM_LIST:
-	      builder.setTables(DbSchema.TBL_ITEMS);
+	      builder.setTables(DbSchema.TBL_USERS);
 	      if (TextUtils.isEmpty(sortOrder)) {
-	         sortOrder = Items.SORT_ORDER_DEFAULT;
+	         sortOrder = Users.SORT_ORDER_DEFAULT;
 	      }
 			break;
 		case ITEM_ID:
-	      builder.setTables(DbSchema.TBL_ITEMS);
+	      builder.setTables(DbSchema.TBL_USERS);
 			// limit query to one row at most:
-			builder.appendWhere(Items._ID + " = "
+			builder.appendWhere(Users._ID + " = "
 					+ uri.getLastPathSegment());
 			break;
-		case PHOTO_LIST:
-			builder.setTables(DbSchema.TBL_PHOTOS);
-			break;
-		case PHOTO_ID:
-			builder.setTables(DbSchema.TBL_PHOTOS);
-			// limit query to one row at most:
-			builder.appendWhere(Photos._ID + " = " + uri.getLastPathSegment());
-			break;
-      case ENTITY_LIST:
-         builder.setTables(DbSchema.LEFT_OUTER_JOIN_STATEMENT);
-         if (TextUtils.isEmpty(sortOrder)) {
-            sortOrder = ItemEntities.SORT_ORDER_DEFAULT;
-         }
-         useAuthorityUri = true;
-         break;
-      case ENTITY_ID:
-         builder.setTables(DbSchema.LEFT_OUTER_JOIN_STATEMENT);
-         // limit query to one row at most:
-         builder.appendWhere(DbSchema.TBL_ITEMS + "." + Items._ID + " = " + uri.getLastPathSegment());
-         useAuthorityUri = true;
-         break;
+		
+     
+      
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
@@ -225,7 +180,7 @@ public class LentItemsProvider extends ContentProvider {
 				null, null, sortOrder);
 		// if we want to be notified of any changes:
 	   if (useAuthorityUri) {
-         cursor.setNotificationUri(getContext().getContentResolver(), LentItemsContract.CONTENT_URI);
+         cursor.setNotificationUri(getContext().getContentResolver(), UsersContract.CONTENT_URI);
 	   }
 	   else {
 	      cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -252,16 +207,16 @@ public class LentItemsProvider extends ContentProvider {
 		int updateCount = 0;
 		switch (URI_MATCHER.match(uri)) {
 		case ITEM_LIST:
-			updateCount = db.update(DbSchema.TBL_ITEMS, values, selection,
+			updateCount = db.update(DbSchema.TBL_USERS, values, selection,
 					selectionArgs);
 			break;
 		case ITEM_ID:
 			String idStr = uri.getLastPathSegment();
-			String where = Items._ID + " = " + idStr;
+			String where = Users._ID + " = " + idStr;
 			if (!TextUtils.isEmpty(selection)) {
 				where += " AND " + selection;
 			}
-			updateCount = db.update(DbSchema.TBL_ITEMS, values, where,
+			updateCount = db.update(DbSchema.TBL_USERS, values, where,
 					selectionArgs);
 			break;
 		default:
@@ -288,7 +243,7 @@ public class LentItemsProvider extends ContentProvider {
       try {
          final ContentProviderResult[] retResult = super.applyBatch(operations);
          db.setTransactionSuccessful();
-         getContext().getContentResolver().notifyChange(LentItemsContract.CONTENT_URI, null);
+         getContext().getContentResolver().notifyChange(UsersContract.CONTENT_URI, null);
          return retResult;
       }
       finally {
@@ -301,16 +256,7 @@ public class LentItemsProvider extends ContentProvider {
       return mIsInBatchMode.get() != null && mIsInBatchMode.get();
    }
 
-	@Override
-	public ParcelFileDescriptor openFile(Uri uri, String mode)
-			throws FileNotFoundException {
-	   doAnalytics(uri, "openFile");
-		if (URI_MATCHER.match(uri) != PHOTO_ID) {
-			throw new IllegalArgumentException(
-					"URI invalid. Use an id-based URI only.");
-		}
-		return openFileHelper(uri, mode);
-	}
+
 
 	/**
 	 * I do not really use analytics, but if you export
@@ -339,7 +285,7 @@ public class LentItemsProvider extends ContentProvider {
    }
 
    /**
-    * Returns the name of the process the pid belongs to. Can be null if neither
+    * Returns the username of the process the pid belongs to. Can be null if neither
     * an Activity nor a Service could be found.
     * @param givenPid
     * @return
