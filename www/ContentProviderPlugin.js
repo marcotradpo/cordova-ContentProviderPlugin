@@ -3,6 +3,7 @@ function ContentProviderPlugin() {
 
 var pluginMethods = [
   "insertUser",
+  "deleteUser",
   "updateUser",
   "queryUser"
 ];

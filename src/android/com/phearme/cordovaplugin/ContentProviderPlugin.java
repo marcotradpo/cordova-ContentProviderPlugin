@@ -42,6 +42,10 @@ public class ContentProviderPlugin extends CordovaPlugin {
 					runInsert(queryArgs, callback);
 					}
 
+				if (action.equals("deleteUser")) {
+					runDelete(queryArgs, callback);
+					}
+
 				if (action.equals("updateUser")) {
 					runUpdate(queryArgs, callback);
 					}
@@ -124,6 +128,44 @@ public class ContentProviderPlugin extends CordovaPlugin {
 		Uri updateUri = ContentUris.withAppendedId(Users.CONTENT_URI, Long.parseLong(id));
 		long resultCount = cordova.getActivity().getContentResolver().update(updateUri, values, null, null);
 
+		if (resultCount == 0) {
+      		callback.error(UNKNOWN_ERROR);
+      		return;
+    	}
+
+		JSONObject result = new JSONObject();
+		try {
+			result.put("resultCount", resultCount);
+		} catch (JSONException e) {
+			callback.error(UNKNOWN_ERROR);
+			e.printStackTrace();
+			return;
+		}
+		callback.success(result);
+	}
+
+
+	private void runDelete(JSONObject queryArgs, CallbackContext callback) {
+
+		String id = null;
+		JSONArray resultJSONArray;
+
+		try {
+			if ( !queryArgs.isNull("id")) {
+				id = queryArgs.getString("id");
+			} else {
+				callback.error(WRONG_PARAMS);
+				return;
+			}
+		} catch (JSONException e) {
+			callback.error(WRONG_PARAMS);
+			return;
+		}
+
+
+        Uri delUri = ContentUris.withAppendedId(Users.CONTENT_URI, Long.parseLong(id));
+        long resultCount = getContentResolver().delete(delUri, null, null);
+		
 		if (resultCount == 0) {
       		callback.error(UNKNOWN_ERROR);
       		return;
