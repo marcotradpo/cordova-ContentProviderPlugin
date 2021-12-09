@@ -8,59 +8,25 @@ import org.json.JSONObject;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.content.ContentProvider;
-import android.content.UriMatcher;
-import android.text.TextUtils;
+
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+
+import com.phearme.cordovaplugin.LentItemsContract.Items;
 
 public class ContentProviderPlugin extends CordovaPlugin {
 	private String WRONG_PARAMS = "Wrong parameters.";
 	private String UNKNOWN_ERROR = "Unknown error.";
 
-	private class ContentProviderBuilder extends ContentProvider {
-	private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-	static {
-
-        uriMatcher.addURI("com.example.app.provider", "table3", 1);
-        uriMatcher.addURI("com.example.app.provider", "table3/#", 2);
-    }
-
-	public Cursor query(
-        Uri uri,
-        String[] projection,
-        String selection,
-        String[] selectionArgs,
-        String sortOrder) {
-        
-        switch (uriMatcher.match(uri)) {
-            
-            case 1:
-
-                if (TextUtils.isEmpty(sortOrder)) sortOrder = "_ID ASC";
-                break;
-
-           
-            case 2:
-
-                
-                selection = selection + "_ID = " + uri.getLastPathSegment();
-                break;
-
-            default:
-         
-        }
-       
-    }
-
-    }
-
-    private ContentProviderBuilder testFoo = new ContentProviderBuilder();
+    private LentItemsProvider testFoo = new LentItemsProvider();
 
 
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		final JSONArray methodArgs = args;
 		final CallbackContext callback = callbackContext;
-		
+
 		if (action.equals("query")) {
 			final JSONObject queryArgs = methodArgs.getJSONObject(0);
 			if (queryArgs == null) {
@@ -92,8 +58,29 @@ public class ContentProviderPlugin extends CordovaPlugin {
 
 	private void runCreate(JSONObject queryArgs, CallbackContext callback) {
 		callback.success("hello");
+    ContentValues values = new ContentValues();
+    values.put(Items.NAME, "marcom");
+    values.put(Items.BORROWER, "provam");
+
+
+    Uri updateUri = ContentUris.withAppendedId(Items.CONTENT_URI, 5);
+    // run query
+
+    Uri photoResult = cordova.getActivity().getContentResolver().insert(Items.CONTENT_URI, values);
+    if (photoResult == null) {
+      callback.error(UNKNOWN_ERROR);
+      return;
+    }
+    callback.success(2);
+
+    long resultCount = cordova.getActivity().getContentResolver().update(updateUri, values, null, null);
+    if (resultCount == 0) {
+      callback.error(UNKNOWN_ERROR);
+      return;
+    }
+    callback.success((int) resultCount);
 	}
-    	
+
 
 
 	private void runQuery(JSONObject queryArgs, CallbackContext callback) {
@@ -163,14 +150,14 @@ public class ContentProviderPlugin extends CordovaPlugin {
 		// run query
 		Cursor result = cordova.getActivity().getContentResolver().query(contentUri, projection, selection, selectionArgs, sortOrder);
 		resultJSONArray = new JSONArray();
-		
+
 		// Some providers return null if an error occurs, others throw an exception
 		if(result == null) {
 			callback.error(UNKNOWN_ERROR);
 		} else {
-		
+
 			try {
-		
+
 				while (result != null && result.moveToNext()) {
 					JSONObject resultRow = new JSONObject();
 					int colCount = result.getColumnCount();
@@ -186,9 +173,9 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			} finally {
 				if(result != null) result.close();
 	        	}
-		
+
 			callback.success(resultJSONArray);
-			
-		}	
+
+		}
 	}
 }
