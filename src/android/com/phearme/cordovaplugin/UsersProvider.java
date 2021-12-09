@@ -121,10 +121,10 @@ public class UsersProvider extends ContentProvider {
 					"Unsupported URI for insertion: " + uri);
 		}
 		SQLiteDatabase db = mHelper.getWritableDatabase();
-		if (URI_MATCHER.match(uri) == ITEM_LIST) {
-			long id = db.insert(DbSchema.TBL_USERS, null, values);
-			return getUriForId(id, uri);
-		}
+
+    long id = db.insert(DbSchema.TBL_USERS, null, values);
+    return getUriForId(id, uri);
+
 	}
 
 	private Uri getUriForId(long id, Uri uri) {
@@ -163,9 +163,9 @@ public class UsersProvider extends ContentProvider {
 			builder.appendWhere(Users._ID + " = "
 					+ uri.getLastPathSegment());
 			break;
-		
-     
-      
+
+
+
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}

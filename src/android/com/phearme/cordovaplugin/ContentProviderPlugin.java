@@ -31,17 +31,17 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			return false;
 		}
 
-		if (action.equals("queryUser") || action.equals("insertUser") || action.equals("updateUser")) {	
+		if (action.equals("queryUser") || action.equals("insertUser") || action.equals("updateUser")) {
 			cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				if (action.equals("queryUser")) {
 					runQuery(queryArgs, callback);
 					}
-				
+
 				if (action.equals("insertUser")) {
 					runInsert(queryArgs, callback);
 					}
-			
+
 				if (action.equals("updateUser")) {
 					runUpdate(queryArgs, callback);
 					}
@@ -49,7 +49,7 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			});
 			return true;
 		}
-				
+
 		return false;
 	}
 
@@ -71,7 +71,7 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			callback.error(WRONG_PARAMS);
 			return;
 		}
-		
+
 		ContentValues values = new ContentValues();
 		values.put(Users.USERNAME, username);
 		values.put(Users.PASSWORD, password);
@@ -83,9 +83,15 @@ public class ContentProviderPlugin extends CordovaPlugin {
 		}
 
 		JSONObject resultUri = new JSONObject();
-					
-		resultUri.put("userResultUri", userResult.getString(i));
-					
+
+		try {
+			resultUri.put("userResultUri", userResult);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			callback.error(UNKNOWN_ERROR);
+			return;
+		}
+
 		callback.success(resultUri);
 	}
 
@@ -110,12 +116,12 @@ public class ContentProviderPlugin extends CordovaPlugin {
 			callback.error(WRONG_PARAMS);
 			return;
 		}
-		
+
 		ContentValues values = new ContentValues();
 		values.put(Users.USERNAME, username);
 		values.put(Users.PASSWORD, password);
 
-		Uri updateUri = ContentUris.withAppendedId(Users.CONTENT_URI, id);
+		Uri updateUri = ContentUris.withAppendedId(Users.CONTENT_URI, Long.parseLong(id));
 		long resultCount = cordova.getActivity().getContentResolver().update(updateUri, values, null, null);
 
 		if (resultCount == 0) {
@@ -123,8 +129,14 @@ public class ContentProviderPlugin extends CordovaPlugin {
       		return;
     	}
 
-		JSONObject result = new JSONObject();	
-		result.put("resultCount", resultCount);
+		JSONObject result = new JSONObject();
+		try {
+			result.put("resultCount", resultCount);
+		} catch (JSONException e) {
+			callback.error(UNKNOWN_ERROR);
+			e.printStackTrace();
+			return;
+		}
 		callback.success(result);
 	}
 

@@ -27,13 +27,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// this is no sample for how to handle SQLite databases
-		// thus I simply drop and recreate the database here.
-		//
-		// NEVER do this in real apps. Your users wouldn't like
-		// loosing data just because you decided to change the schema
-		db.execSQL(DbSchema.DDL_DROP_TBL_USERS);
-		onCreate(db);
 	}
 
 }
