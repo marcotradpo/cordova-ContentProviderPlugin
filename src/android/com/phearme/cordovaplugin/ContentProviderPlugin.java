@@ -147,24 +147,9 @@ public class ContentProviderPlugin extends CordovaPlugin {
 
 	private void runDelete(JSONObject queryArgs, CallbackContext callback) {
 
-		String id = null;
 		JSONArray resultJSONArray;
 
-		try {
-			if ( !queryArgs.isNull("id")) {
-				id = queryArgs.getString("id");
-			} else {
-				callback.error(WRONG_PARAMS);
-				return;
-			}
-		} catch (JSONException e) {
-			callback.error(WRONG_PARAMS);
-			return;
-		}
-
-
-        Uri delUri = ContentUris.withAppendedId(Users.CONTENT_URI, Long.parseLong(id));
-        long resultCount = cordova.getActivity().getContentResolver().delete(delUri, null, null);
+        long resultCount = cordova.getActivity().getContentResolver().delete(Users.CONTENT_URI, null, null);
 
 		if (resultCount == 0) {
       		callback.error(UNKNOWN_ERROR);
