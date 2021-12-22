@@ -20,19 +20,12 @@
 		<source-file src="src/android/com/phearme/cordovaplugin/UsersOpenHelper.java" target-dir="src/com/phearme/cordovaplugin" />
 		<source-file src="src/android/com/phearme/cordovaplugin/UsersProvider.java" target-dir="src/com/phearme/cordovaplugin" />
 
-		<config-file target="AndroidManifest.xml" parent="/*">
-		    <permission android:name="it.iooota.jarvis.users.READ" android:protectionLevel="normal" />
-			<permission android:name="it.iooota.jarvis.users.WRITE" android:protectionLevel="normal" />
-	   </config-file>
 	   <config-file target="AndroidManifest.xml" parent="application">
 			<provider
 				android:name="com.phearme.cordovaplugin.UsersProvider"
 				android:authorities="it.iooota.jarvis.users"
-				android:exported="true"
-				android:grantUriPermissions="true"
-				android:label="UsersProvider"
-				android:readPermission="it.iooota.jarvis.users.READ"
-				android:writePermission="it.iooota.jarvis.users.WRITE" >
+				android:exported="false"
+				android:label="UsersProvider">
 			</provider>
 		</config-file>
 	</platform>
