@@ -1,9 +1,9 @@
 {
-  "name": "com.phearme.cordovaplugin.ContentProviderPlugin",
+  "name": "com.iooota.cordovaplugin.ContentProviderPlugin",
   "version": "0.2.7",
   "description": "A generic Cordova plugin for querying Content Providers on Android devices.",
   "cordova": {
-    "id": "com.phearme.cordovaplugin.ContentProviderPlugin",
+    "id": "com.iooota.cordovaplugin.ContentProviderPlugin",
     "platforms": [
       "android"
     ]
@@ -20,7 +20,7 @@
     "contentprovider",
     "android"
   ],
-  "author": "phearme",
+  "author": "iooota",
   "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/marcotradpo/cordova-ContentProviderPlugin/issues"
