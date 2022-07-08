@@ -6,7 +6,7 @@
 	<license>Apache 2.0</license>
 	<keywords>cordova,device,content,provider,contentprovider,android</keywords>
 	<js-module src="www/TestCameraPlugin.js" name="TestCameraPlugin">
-		<clobbers target="contentproviderplugin" />
+		<clobbers target="testcameraplugin" />
 	</js-module>
 	<platform name="android">
 		<config-file target="res/xml/config.xml" parent="/*">

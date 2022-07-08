@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class ContentProviderPlugin extends CordovaPlugin {
+public class TestCameraPlugin extends CordovaPlugin {
 	private String WRONG_PARAMS = "Wrong parameters.";
 	private String UNKNOWN_ERROR = "Unknown error.";
 	private String URITEST = "uri di prova";

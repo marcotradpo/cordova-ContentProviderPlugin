@@ -1,16 +1,16 @@
 {
-  "name": "com.iooota.cordovaplugin.ContentProviderPlugin",
+  "name": "cordova-plugin-test-camera-iooota",
   "version": "0.2.7",
   "description": "A generic Cordova plugin for querying Content Providers on Android devices.",
   "cordova": {
-    "id": "com.iooota.cordovaplugin.ContentProviderPlugin",
+    "id": "cordova-plugin-test-camera-iooota",
     "platforms": [
       "android"
     ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcotradpo/cordova-ContentProviderPlugin.git"
+    "url": "git+https://github.com/marcotradpo/cordova-TestCameraPlugin.git"
   },
   "keywords": [
     "cordova",
@@ -23,7 +23,7 @@
   "author": "iooota",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/marcotradpo/cordova-ContentProviderPlugin/issues"
+    "url": "https://github.com/marcotradpo/cordova-TestCameraPlugin/issues"
   },
-  "homepage": "https://github.com/marcotradpo/cordova-ContentProviderPlugin#readme"
+  "homepage": "https://github.com/marcotradpo/cordova-TestCameraPlugin#readme"
 }
