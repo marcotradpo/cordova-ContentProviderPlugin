@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-test-camera-iooota",
-  "version": "0.2.7",
+  "version": "0.2.11",
   "description": "A generic Cordova plugin for querying Content Providers on Android devices.",
   "cordova": {
     "id": "cordova-plugin-test-camera-iooota",

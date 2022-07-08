@@ -5,13 +5,13 @@
 	<description>A Cordova plugin for querying web socket on Android devices.</description>
 	<license>Apache 2.0</license>
 	<keywords>cordova,device,content,provider,contentprovider,android</keywords>
-	<js-module src="www/TestCameraPlugin.js" name="TestCameraPlugin">
-		<clobbers target="testcameraplugin" />
-	</js-module>
-	<platform name="android">
+	<platform name="android">	
+		<js-module src="www/TestCameraPlugin.js" name="TestCameraPlugin">
+			<clobbers target="testcameraplugin" />
+		</js-module>
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="TestCameraPlugin">
-				<param name="android-package" value="cordova.plugins.testCamera" />
+				<param name="android-package" value="com.iooota.cordovaplugin.TestCameraPlugin" />
 			</feature>
 		</config-file>
 		<source-file src="src/android/com/iooota/cordovaplugin/TestCameraPlugin.java" target-dir="src/com/iooota/cordovaplugin" />
